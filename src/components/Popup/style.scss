@@ -142,6 +142,7 @@
 
 
 @media only screen and (min-width: 760px) {
+  .modal_container{
     .modal{
         width: 80% !important;
         height: 95% !important;
@@ -150,18 +151,23 @@
             margin: 60px 0 10px !important;
         }
     }
+  }
 }
 
 @media only screen and (min-height: 830px){
+  .modal_container{
     .modal{
         height: 85% !important;
     }
+  }
 }
 
 @media only screen and (min-height: 1020px){
+  .modal_container{
     .modal{
         height: 70% !important;
     }
+}
 }
 
 

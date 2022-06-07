@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import './single.scss'
 import Response from "../../components/response";
 import ChangeTimestamp from "../../components/Timestamp";
+import WarningPopup from "../../components/WarningPopup";
+import InfoPopup from "../../components/InfoPopup";
 
 
 const Singleview = () => {
@@ -70,6 +72,7 @@ const Singleview = () => {
     if(question) {
         return (
             <>
+            <InfoPopup/>
             <div id="single-view-container">
             <button className="go_back_single"  onClick={() => history.back()}></button>
             <div id="single-content">
