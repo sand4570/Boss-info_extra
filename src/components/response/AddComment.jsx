@@ -25,7 +25,7 @@ const AddComment = ({id, setComment, commentInput, setCommentInput, getData}) =>
             account_id: user
         }
 
-        fetch("https://boss-info.herokuapp.com/api/comments", {
+        fetch("https://boss-info-extra.herokuapp.com/api/comments", {
             method: "post",
             headers: {
               "Content-Type": "application/json; charset=utf-8",
