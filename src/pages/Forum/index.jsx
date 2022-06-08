@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 
 import SortSlider from '../../components/SortSlider';
 import Popup from '../../components/Popup'
+import WarningPopup from '../../components/WarningPopup'
+import InforPopup from '../../components/InfoPopup'
 import Question from '../../components/Question'
 import './style.scss'
 
@@ -11,6 +13,7 @@ const Forum = () => {
     const [categories, setCategories] = useState(null)
     const [sort, setSort] = useState("newest")
     const [questions, setQuestions] = useState(null)
+    const [admin, setAdmin] = useState(true)
 
     //Async funtion to fetch the data from the api
     async function getQuestionData() {
@@ -83,41 +86,86 @@ const Forum = () => {
         }
     }
 
+    const handleChange = () => {
+
+    }
+
 
     if (categories) {
-        return (
-            <>
-            <Popup modal={modal} setModal={setModal} getQuestionData={getQuestionData}/>
-            
-                <div id='top-section'>
-                    <SortSlider setSort={setSort}/>
-                    <img onClick={toggleFilter} id="filter_icon" src='./filter_icon-25.svg'></img>
-
-                    <button onClick={toggleModal} className='new-question-button'>Nyt spørgsmål</button>
-                </div>
-                
-            
-                <div className={filter == true ? 'side-menu active' : 'side-menu unactive'}>
-                    <button onClick={toggleFilter}></button>
-                    <div id='categories'>
+        if (admin == true) {
+            return (
+                <>
+                <Popup modal={modal} setModal={setModal} getQuestionData={getQuestionData}/>
+                <WarningPopup header='Er du sikker på du vil slette' warning='Slettede spørgsmål er ikke længere synlige for brugere på siden' primButton='Slet' secButton='Cancel' ></WarningPopup>
+                    <div id='top-section'>
                         <SortSlider setSort={setSort}/>
-                        <h3>Filtrer</h3>
-                        {categories.categories.map((cat) => {
-                            // console.log("categories here", categories)
-                            return (
-                                <div className="category_wrapper">
-                                    <input type="checkbox" onClick={() => showFilter(cat, filterQuestions)} id={cat.id} className="category_checkbox" value={cat.category}/>
-                                    <label className="category_label" for={cat.id}>{cat.category}</label>
-                                </div>
-
-                            )
-                        })}
-                        <p onClick={resetCategories} id='reset_button'>Nulstil</p>
+                        <img onClick={toggleFilter} id="filter_icon" src='./filter_icon-25.svg'></img>
+    
+                        <button onClick={toggleModal} className='new-question-button'>Nyt spørgsmål</button>
                     </div>
-                </div>
-                <Question questions={questions} sort={sort} filterQuestions={filterQuestions}></Question>
-            </>
-        )
+                    
+                
+                    <div className={filter == true ? 'side-menu active' : 'side-menu unactive'}>
+                        <button onClick={toggleFilter}></button>
+                        <div id='categories'>
+                            <SortSlider setSort={setSort}/>
+                            <div className='delete-check-wrapper'>
+                                <input type='checkbox' id='delete-check' className="delete-check" name='delete-check' value='deleted' onChange={handleChange}></input>
+                                <label className="delete-check-label" for='delete-check'>Vis slettede</label>
+                            </div>
+                            <h3>Filtrer</h3>
+                            {categories.categories.map((cat) => {
+                                // console.log("categories here", categories)
+                                return (
+                                    <div className="category_wrapper">
+                                        <input type="checkbox" onClick={() => showFilter(cat, filterQuestions)} id={cat.id} className="category_checkbox" value={cat.category}/>
+                                        <label className="category_label" for={cat.id}>{cat.category}</label>
+                                    </div>
+    
+                                )
+                            })}
+                            <p onClick={resetCategories} id='reset_button'>Nulstil</p>
+                        </div>
+                    </div>
+                    <Question questions={questions} sort={sort} filterQuestions={filterQuestions} admin={admin}></Question>
+                </>
+            )
+        } else {
+            return (
+                <>
+                <Popup modal={modal} setModal={setModal} getQuestionData={getQuestionData}/>
+                
+                
+                    <div id='top-section'>
+                        <SortSlider setSort={setSort}/>
+                        <img onClick={toggleFilter} id="filter_icon" src='./filter_icon-25.svg'></img>
+    
+                        <button onClick={toggleModal} className='new-question-button'>Nyt spørgsmål</button>
+                    </div>
+                    
+                
+                    <div className={filter == true ? 'side-menu active' : 'side-menu unactive'}>
+                        <button onClick={toggleFilter}></button>
+                        <div id='categories'>
+                            <SortSlider setSort={setSort}/>
+                            <h3>Filtrer</h3>
+                            {categories.categories.map((cat) => {
+                                // console.log("categories here", categories)
+                                return (
+                                    <div className="category_wrapper">
+                                        <input type="checkbox" onClick={() => showFilter(cat, filterQuestions)} id={cat.id} className="category_checkbox" value={cat.category}/>
+                                        <label className="category_label" for={cat.id}>{cat.category}</label>
+                                    </div>
+    
+                                )
+                            })}
+                            <p onClick={resetCategories} id='reset_button'>Nulstil</p>
+                        </div>
+                    </div>
+                    <Question questions={questions} sort={sort} filterQuestions={filterQuestions} admin={admin}></Question>
+                </>
+            ) 
+        }
     } else {
         return <span>Loading</span>
     }

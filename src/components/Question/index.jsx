@@ -1,7 +1,9 @@
 import { useLocation, Link } from 'react-router-dom';
 
 
-const Question = ({questions, sort, filterQuestions}) => {
+const Question = ({questions, sort, filterQuestions, admin}) => {
+
+    console.log('admin', admin)
 
     const { search } = useLocation()
   
@@ -28,6 +30,11 @@ const Question = ({questions, sort, filterQuestions}) => {
                 string
             )
         }
+    }
+
+    //To delete
+    const handleDelete = (id) => {
+
     }
 
 
@@ -58,46 +65,96 @@ const Question = ({questions, sort, filterQuestions}) => {
             sortedArray = sortedArray.sort((a, b) => parseInt(b.answers) - parseInt(a.answers));
         }
 
-        return (
+        if (admin == true) {
+            return (
                 
-            <div id='content'>
-
-                {sortedArray.map((question) => {
-
-                    return (
-                        <Link to={`/forum/${question.id + search}`}>
-                            <div className='question-box'>
-                                <div className='profile-box'>
-                                    <div className='circle-name'> <span>{question.account.firstname.substring(0,1) + question.account.lastname.substring(0,1)}</span></div>
-                                    <div className='text-box'>
-                                        <span className='profile-name'>{`${question.account.firstname} ${question.account.lastname}`}</span>
-                                        <span className='time-stamp'>{changeTimeStamp(question.createdAt)}</span>
+                <div id='content'>
+    
+                    {sortedArray.map((question) => {
+    
+                        return (
+                            <div className='admin-wrapper'>
+                            <Link to={`/forum/${question.id + search}`}>
+                                <div className='question-box'>
+                                    <div className='profile-box'>
+                                        <div className='circle-name'> <span>{question.account.firstname.substring(0,1) + question.account.lastname.substring(0,1)}</span></div>
+                                        <div className='text-box'>
+                                            <span className='profile-name'>{`${question.account.firstname} ${question.account.lastname}`}</span>
+                                            <span className='time-stamp'>{changeTimeStamp(question.createdAt)}</span>
+                                        </div>
+                                    </div>
+                                    <div className='comment-container'>
+                                        <p>{question.answers} kommentarer</p>
+                                        <img src='./comment_icon.png' alt='taleboble, ikon der indikerer kommentarer'></img>
+                                    </div>
+                                    <div className='content-box'>
+                                        <h3>{question.title}</h3>
+                                        <div className='text-content'>
+                                            <span>{`${cutString(question.content)} `}</span>
+                                            <span className='read-more'>Læs mere</span>
+                                        </div>
+                                        <div className='cats'>
+                                            {question.categories.map((cat) => {
+                                                return (
+                                                    <span className='cat'>{cat.category}</span>
+                                                )
+                                            })}
+                                        </div>
                                     </div>
                                 </div>
-                                <div className='comment-container'>
-                                    <p>{question.answers} kommentarer</p>
-                                    <img src='./comment_icon.png' alt='taleboble, ikon der indikerer kommentarer'></img>
-                                </div>
-                                <div className='content-box'>
-                                    <h3>{question.title}</h3>
-                                    <div className='text-content'>
-                                        <span>{`${cutString(question.content)} `}</span>
-                                        <span className='read-more'>Læs mere</span>
-                                    </div>
-                                    <div className='cats'>
-                                        {question.categories.map((cat) => {
-                                            return (
-                                                <span className='cat'>{cat.category}</span>
-                                            )
-                                        })}
-                                    </div>
-                                </div>
+                            </Link>
+                            <button id='delete-button' onClick={() => handleDelete(question.id)}>
+                                <img height={40} width={30} src='./delete_icon.svg'></img>
+                            </button>
                             </div>
-                        </Link>
-                    )
-                })}
-            </div>
-        )
+                        )
+                    })}
+                </div>
+            )
+        } else {
+            return (
+                
+                <div id='content'>
+    
+                    {sortedArray.map((question) => {
+    
+                        return (
+                            <Link to={`/forum/${question.id + search}`}>
+                                <div className='question-box'>
+                                    <div className='profile-box'>
+                                        <div className='circle-name'> <span>{question.account.firstname.substring(0,1) + question.account.lastname.substring(0,1)}</span></div>
+                                        <div className='text-box'>
+                                            <span className='profile-name'>{`${question.account.firstname} ${question.account.lastname}`}</span>
+                                            <span className='time-stamp'>{changeTimeStamp(question.createdAt)}</span>
+                                        </div>
+                                    </div>
+                                    <div className='comment-container'>
+                                        <p>{question.answers} kommentarer</p>
+                                        <img src='./comment_icon.png' alt='taleboble, ikon der indikerer kommentarer'></img>
+                                    </div>
+                                    <div className='content-box'>
+                                        <h3>{question.title}</h3>
+                                        <div className='text-content'>
+                                            <span>{`${cutString(question.content)} `}</span>
+                                            <span className='read-more'>Læs mere</span>
+                                        </div>
+                                        <div className='cats'>
+                                            {question.categories.map((cat) => {
+                                                return (
+                                                    <span className='cat'>{cat.category}</span>
+                                                )
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+                            </Link>
+                        )
+                    })}
+                </div>
+            )
+        }
+
+        
           
       } else {
           return (
