@@ -12,7 +12,7 @@ const Login = () => {
 
     //get request for the accounts
     useEffect(() => {
-        fetch('https://boss-info.herokuapp.com/api/accounts', {
+        fetch('https://boss-info-extra.herokuapp.com/api/accounts', {
         headers: {
             'api-key': 'nSY1oe7pw05ViSEapg09D4gHG87yJCTX67uDa1OO',
         }})

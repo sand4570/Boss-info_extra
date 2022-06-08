@@ -56,7 +56,7 @@ const Navbar = () => {
     if (user) {
         //Getting the user, if logged in
         useEffect(() => {
-            fetch('https://boss-info.herokuapp.com/api/accounts/' + user, {
+            fetch('https://boss-info-extra.herokuapp.com/api/accounts/' + user, {
             headers: {
                 'api-key': 'nSY1oe7pw05ViSEapg09D4gHG87yJCTX67uDa1OO',
             }})
