@@ -21,8 +21,7 @@ const Forum = () => {
 
     const [warningModal, setWarningModal] = useState(false)
     const [deleteId, setDeleteId] = useState(null)
-    console.log('id', deleteId);
-    console.log('modal', warningModal)
+    const [infoModal, setInfoModal] = useState(false)
     
     const [searchParams, setSearchParams] = useSearchParams()
     const userType = searchParams.get("type")
@@ -100,6 +99,28 @@ const Forum = () => {
 
     const handleDelete = () => {
         console.log('delete id', deleteId)
+
+        const jsonBody = {
+            deleted: 1
+        }
+
+        fetch(`https://boss-info-extra.herokuapp.com/api/questions/${deleteId}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              "api-key": "nSY1oe7pw05ViSEapg09D4gHG87yJCTX67uDa1OO",
+              "cache-control": "no-cache"
+            },
+            body: JSON.stringify(jsonBody),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+                //console.log(data)
+                getQuestionData()
+                setInfoModal(true)
+            });
+
+        
     }
 
 
@@ -109,6 +130,7 @@ const Forum = () => {
                 <>
                 <Popup modal={modal} setModal={setModal} getQuestionData={getQuestionData}/>
                 <WarningPopup warningModal={warningModal} setWarningModal={setWarningModal} primeFuction={handleDelete} header='Er du sikker på du vil slette' warning='Slettede spørgsmål er ikke længere synlige for brugere på siden' primButton='Slet' secButton='Cancel' ></WarningPopup>
+                <InforPopup state={infoModal} setState={setInfoModal} header='Spørgsmålet er nu slettet' warning='Spørgsmål kan altid genskabes via "vis slettede"' buttonTxt='Forstået'></InforPopup>
                     <div id='top-section'>
                         <SortSlider setSort={setSort}/>
                         <img onClick={toggleFilter} id="filter_icon" src='./filter_icon-25.svg'></img>
