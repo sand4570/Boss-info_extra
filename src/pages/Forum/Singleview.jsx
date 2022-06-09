@@ -102,7 +102,7 @@ const Singleview = () => {
                     {question.questions[0].answers.map((answer) => {
                         console.log('what is answer', answer)
                         return (
-                            <Response answer={answer} getData={getData}></Response>
+                            <Response answer={answer} question={question} getData={getData}></Response>
                         )
                     })}
                 </div>
