@@ -31,7 +31,7 @@ const Forum = () => {
 
     //Async funtion to fetch the data from the api
     async function getQuestionData() {
-        fetch('https://boss-info.herokuapp.com/api/questions', {
+        fetch('https://boss-info-extra.herokuapp.com/api/questions', {
         headers: {
             'api-key': 'nSY1oe7pw05ViSEapg09D4gHG87yJCTX67uDa1OO',
         }})
@@ -47,7 +47,7 @@ const Forum = () => {
 
     //get request for the categories
     useEffect(() => {
-        fetch('https://boss-info.herokuapp.com/api/categories', {
+        fetch('https://boss-info-extra.herokuapp.com/api/categories', {
         headers: {
             'api-key': 'nSY1oe7pw05ViSEapg09D4gHG87yJCTX67uDa1OO',
         }})

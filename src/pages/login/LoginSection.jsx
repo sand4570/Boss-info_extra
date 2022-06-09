@@ -27,7 +27,7 @@ const LoginSection = ({state, data}) => {
             if (filteredAccounts.length > 0) {
 
                 if (passwordLogin.toLocaleLowerCase() === filteredAccounts[0].password) {
-                    
+
                     window.location.href=`/kea/hovedopgave/boss_info/forum?id=${filteredAccounts[0].id}&type=${filteredAccounts[0].accountTypeId}`;
                     setLoginError(false)
 
@@ -110,7 +110,7 @@ const LoginSection = ({state, data}) => {
             password: passwordSignup
         }
     
-        fetch("https://boss-info.herokuapp.com/api/accounts", {
+        fetch("https://boss-info-extra.herokuapp.com/api/accounts", {
             method: "post",
             headers: {
                 "Content-Type": "application/json; charset=utf-8",
