@@ -1,11 +1,10 @@
 import { useParams, useSearchParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import './single.scss'
 import Response from "../../components/response";
 import ChangeTimestamp from "../../components/Timestamp";
 import WarningPopup from "../../components/WarningPopup";
-import InfoPopup from "../../components/InfoPopup";
 
 
 const Singleview = () => {
@@ -15,6 +14,24 @@ const Singleview = () => {
     const [question, setQuestion] = useState(null)
     const [searchParams, setSearchParams] = useSearchParams()
     const [answerContent, setAnswerContent] = useState("")
+
+    const [warningModal, setWarningModal] = useState(false)  
+
+    const [isVerified, setIsVerified] = useState([]);
+    const [verifiedAnswer, setVerifiedAnswer] = useState(null);
+
+    const verifyQuestion = () => {
+        let new_verified = question.questions[0].answers.map((svar) => {
+            if(svar.id == verifiedAnswer){
+                svar.verified = 1;
+                return 1
+            } else {
+                svar.verified = 0;
+                return 0
+            }
+        })
+        setIsVerified(new_verified);
+    }
 
     //post request for answers
     const handleSubmit = (event) => {
@@ -30,8 +47,6 @@ const Singleview = () => {
             account_id: user
         }
 
-        console.log('json answer', answer)
-
         fetch("https://boss-info-extra.herokuapp.com/api/answers", {
             method: "post",
             headers: {
@@ -46,7 +61,6 @@ const Singleview = () => {
                 console.log(data)
                 setAnswerContent("")
                 document.querySelector('#answer-input').value = ""
-                getData()
             });   
     }
 
@@ -56,12 +70,17 @@ const Singleview = () => {
         headers: {
             'api-key': 'nSY1oe7pw05ViSEapg09D4gHG87yJCTX67uDa1OO',
         }})
-        .then((response) => response.json() )
-        .then((data) => setQuestion(data))
+        .then(response => response.json() )
+        .then(data => {setQuestion(data); return data})
+        .then(data => {console.log("questions", question); return data})
+        // .then((question) => getVerifications(question))
+        .then(data => {setIsVerified(
+            data.questions[0].answers.map((answer) => { return answer.verified })
+        ); return data})
     }
 
     useEffect(() => {
-        getData()
+        getData()        
     },[])
 
     const scrollToInput = () => {
@@ -72,7 +91,7 @@ const Singleview = () => {
     if(question) {
         return (
             <>
-            <InfoPopup/>
+            <WarningPopup primeFuction={verifyQuestion} warningModal={warningModal} setWarningModal={setWarningModal} header={'Erstat verificeret svar'} warning={'Der findes allerede et verificeret svar på dette spørgsmål, og kan kun indeholde et. Ønsker du at erstatte det verificerede svar med det nye?'} primButton={'Erstat'} secButton={'Behold'} />
             <div id="single-view-container">
             <button className="go_back_single"  onClick={() => history.back()}></button>
             <div id="single-content">
@@ -99,10 +118,9 @@ const Singleview = () => {
                 <hr className="devider"></hr>
                 
                 <div id="response-wrapper">
-                    {question.questions[0].answers.map((answer) => {
-                        console.log('what is answer', answer)
+                    {question.questions[0].answers.map((answer, i) => {
                         return (
-                            <Response answer={answer} question={question} getData={getData}></Response>
+                            <Response verifiedAnswer={verifiedAnswer} verifyQuestion={verifyQuestion} key={i} setVerifiedAnswer={setVerifiedAnswer} isVerified={isVerified[i]} answer={answer} setWarningModal={setWarningModal} question={question} getData={getData}></Response>
                         )
                     })}
                 </div>

@@ -5,46 +5,36 @@ import ChangeTimestamp from "../Timestamp";
 import Comment from "./comment";
 import AddComment from "./AddComment";
 
-const Response = ({answer, question, getData}) => {
+const Response = ({answer, isVerified, setWarningModal, question, getData, setVerifiedAnswer, verifyQuestion, verifiedAnswer}) => {
 
     const [commentInput, setCommentInput] = useState("null")
     const [comment, setComment] = useState("")
 
-    const [isVerified, setIsVerified] = useState(answer.verified == 1);
     const [isAdmin, setIsAdmin] = useState(true);
 
-    //console.log("isVerified", isVerified)
+    const [newVerification, setNewVerification] = useState(null)
 
-    const verifyQuestion = () => {
-        setIsVerified(true)
-    }
+    const [clickedCheckbox, setClickedCheckbox] = useState(null);
 
-    const verifiedClicked = (answer) => {
-        
-        question.questions[0].answers.map((svar) => {
-            if (svar.verified === 1){
-                console.log("one is verified")
-            }
-        })
-        
-
-        /* if(answer.verified === 0){
-            
+    const setAnswerVerification = (verified_answer, e) => {
+        //if nothing is verified
+        if (question.questions[0].answers.every(item => item.verified == 0)) {
+            setVerifiedAnswer(verified_answer.id)
+            setNewVerification(verified_answer.id)
+        } else {
+            //if an answer if verified
             question.questions[0].answers.map((svar) => {
                 if (svar.verified === 1){
-                    console.log("i am verfied")
-                    setIsVerified(0)
-                    svar.verified = 0;
+                    setVerifiedAnswer(verified_answer.id)
+                    setWarningModal(true)
                 }
             })
-            setIsVerified(1)
-            answer.verified = 1;
-            
-        } else{
-            //setIsVerified(0)
-            //answer.verified = 0;
-        } */
+        }
     }
+
+  useEffect(() => {
+        verifyQuestion();
+    }, [answer.id == newVerification]);
    
     //Scroll to the input and make it active
     const handleAnswerClick = (accountnName, id) => {
@@ -63,7 +53,7 @@ const Response = ({answer, question, getData}) => {
             return (
                 <>
                 <div className={isAdmin ? "response_outer_wrapper" : "response_outer_wrapper not_admin"}>
-                    <div className={isVerified === true ? "response-container verified padding" : "response-container padding"}>
+                    <div className={isVerified === 1 ? "response-container verified padding" : "response-container padding"}>
                         <div id="profile-wrapper">
                         <div className='circle-name-white'> <span>{answer.account.firstname.substring(0,1) + answer.account.lastname.substring(0,1)}</span></div>
                             <div>
@@ -75,7 +65,7 @@ const Response = ({answer, question, getData}) => {
                         <button className="answer-button-dark" onClick={() => {handleAnswerClick(answer.account.firstname, `A${answer.id}`)}}>Skriv en kommentar</button>
                     </div>
                     <label className="verified_container">
-                        <input type="radio" name="verified-checkmark" defaultChecked={answer.verified === 1} onChange={() => verifiedClicked(answer)}/>
+                        <input type="radio" name="verified-checkmark" defaultChecked={answer.verified === 1} onChange={(e) => setAnswerVerification(answer, e)}/>
                         <span className="verified_checkmark"></span>
                     </label>
                 </div>
@@ -94,7 +84,7 @@ const Response = ({answer, question, getData}) => {
             return (
                 <>
                 <div className={isAdmin ? "response_outer_wrapper" : "response_outer_wrapper not_admin"}>
-                <div className={isVerified === true ? "response-container verified padding" : "response-container padding"}>
+                <div className={isVerified === 1 ? "response-container verified padding" : "response-container padding"}>
                     <div id="profile-wrapper">
                     <div className='circle-name-white'> <span>{answer.account.firstname.substring(0,1) + answer.account.lastname.substring(0,1)}</span></div>
                         <div>
@@ -106,7 +96,7 @@ const Response = ({answer, question, getData}) => {
                     <button className="answer-button-dark" onClick={() => {handleAnswerClick(answer.account.firstname, `A${answer.id}`)}}>Skriv en kommentar</button>
                 </div>
                     <label className="verified_container">
-                        <input type="radio" name="verified-checkmark" defaultChecked={answer.verified === 1} onChange={(e) => verifiedClicked(answer, e)}/>
+                        <input type="radio" name="verified-checkmark" defaultChecked={answer.verified === 1} onChange={() => setAnswerVerification(answer)}/>
                         <span className="verified_checkmark"></span>
                     </label>
                 </div>
