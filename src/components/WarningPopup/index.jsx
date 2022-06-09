@@ -1,9 +1,14 @@
 import React, {useState} from 'react';
 import './style.scss'
 
-const WarningPopup = ({warningModal, setWarningModal, header, warning, primButton, secButton}) => {
+const WarningPopup = ({warningModal, setWarningModal, primeFuction, header, warning, primButton, secButton}) => {
 
     console.log('in warning', warningModal)
+
+    const handlePrimeClick = () => {
+        setWarningModal(false)
+        primeFuction()
+    }
 
     return(
         <div className={warningModal ? 'modal_container_info showing' : 'modal_container_info hiding'}>
@@ -13,7 +18,7 @@ const WarningPopup = ({warningModal, setWarningModal, header, warning, primButto
                     <p>{warning}</p>
                     <div className='button_wrapper'>
                         <button onClick={() => setWarningModal(false)} className='secondaryButton'>{secButton}</button>
-                    <button className='primaryButton'>{primButton}</button>
+                    <button className='primaryButton' onClick={handlePrimeClick}>{primButton}</button>
                     </div>
                 </div>
             </div>
