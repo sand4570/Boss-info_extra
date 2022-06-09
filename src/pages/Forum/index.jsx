@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import { useSearchParams } from "react-router-dom";
 
 import SortSlider from '../../components/SortSlider';
 import Popup from '../../components/Popup'
@@ -13,7 +14,20 @@ const Forum = () => {
     const [categories, setCategories] = useState(null)
     const [sort, setSort] = useState("newest")
     const [questions, setQuestions] = useState(null)
-    const [admin, setAdmin] = useState(true)
+
+    let [filterQuestions, setFilteredQuestions] = useState([])
+    let [modal, setModal] = useState(false)
+    let [filter, setFilter] = useState(false)
+
+    const [warningModal, setWarningModal] = useState(false)
+    const [deleteId, setDeleteId] = useState(null)
+    console.log('id', deleteId);
+    console.log('modal', warningModal)
+    
+    const [searchParams, setSearchParams] = useSearchParams()
+    const userType = searchParams.get("type")
+
+
 
     //Async funtion to fetch the data from the api
     async function getQuestionData() {
@@ -40,12 +54,6 @@ const Forum = () => {
         .then((response) => response.json() )
         .then((data) => setCategories(data))
     },[])
-
-
-
-    let [filterQuestions, setFilteredQuestions] = useState([])
-    let [modal, setModal] = useState(false)
-    let [filter, setFilter] = useState(false)
 
 
     //Filtering the posts
@@ -92,11 +100,11 @@ const Forum = () => {
 
 
     if (categories) {
-        if (admin == true) {
+        if (userType == 2) {
             return (
                 <>
                 <Popup modal={modal} setModal={setModal} getQuestionData={getQuestionData}/>
-                <WarningPopup header='Er du sikker på du vil slette' warning='Slettede spørgsmål er ikke længere synlige for brugere på siden' primButton='Slet' secButton='Cancel' ></WarningPopup>
+                <WarningPopup warningModal={warningModal} setWarningModal={setWarningModal} header='Er du sikker på du vil slette' warning='Slettede spørgsmål er ikke længere synlige for brugere på siden' primButton='Slet' secButton='Cancel' ></WarningPopup>
                     <div id='top-section'>
                         <SortSlider setSort={setSort}/>
                         <img onClick={toggleFilter} id="filter_icon" src='./filter_icon-25.svg'></img>
@@ -127,7 +135,7 @@ const Forum = () => {
                             <p onClick={resetCategories} id='reset_button'>Nulstil</p>
                         </div>
                     </div>
-                    <Question questions={questions} sort={sort} filterQuestions={filterQuestions} admin={admin}></Question>
+                    <Question questions={questions} sort={sort} filterQuestions={filterQuestions} userType={userType} setDeleteId={setDeleteId} setWarningModal={setWarningModal}></Question>
                 </>
             )
         } else {
@@ -162,7 +170,7 @@ const Forum = () => {
                             <p onClick={resetCategories} id='reset_button'>Nulstil</p>
                         </div>
                     </div>
-                    <Question questions={questions} sort={sort} filterQuestions={filterQuestions} admin={admin}></Question>
+                    <Question questions={questions} sort={sort} filterQuestions={filterQuestions} userType={userType}></Question>
                 </>
             ) 
         }

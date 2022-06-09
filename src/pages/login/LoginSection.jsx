@@ -27,7 +27,8 @@ const LoginSection = ({state, data}) => {
             if (filteredAccounts.length > 0) {
 
                 if (passwordLogin.toLocaleLowerCase() === filteredAccounts[0].password) {
-                    window.location.href=`/kea/hovedopgave/boss_info/forum?id=${filteredAccounts[0].id}`;
+                    
+                    window.location.href=`/kea/hovedopgave/boss_info/forum?id=${filteredAccounts[0].id}&type=${filteredAccounts[0].accountTypeId}`;
                     setLoginError(false)
 
                     }  else {
