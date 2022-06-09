@@ -21,11 +21,26 @@ const Forum = () => {
 
     const [warningModal, setWarningModal] = useState(false)
     const [deleteId, setDeleteId] = useState(null)
+
+    const [showDelete, setShowDelete] = useState(false)
+
     const [infoModal, setInfoModal] = useState(false)
+
     
     const [searchParams, setSearchParams] = useSearchParams()
     const userType = searchParams.get("type")
 
+
+    const [warningTitle, setWarningTitle] = useState('Er du sikker på du vil slette spørgsmålet')
+
+    useEffect(() => {
+        if (showDelete == true) {
+            setWarningTitle('Er du sikker på du vil genskabe spørgsmålet')
+        } else {
+            setWarningTitle('Er du sikker på du vil slette spørgsmålet')
+        }
+    })
+    
 
 
     //Async funtion to fetch the data from the api
@@ -93,8 +108,12 @@ const Forum = () => {
         }
     }
 
-    const handleChange = () => {
-
+    const toggleShowDelete = () => {
+        if (showDelete == true) {
+            setShowDelete(false)
+        } else {
+            setShowDelete(true)
+        }
     }
 
     const handleDelete = () => {
@@ -129,8 +148,10 @@ const Forum = () => {
             return (
                 <>
                 <Popup modal={modal} setModal={setModal} getQuestionData={getQuestionData}/>
-                <WarningPopup warningModal={warningModal} setWarningModal={setWarningModal} primeFuction={handleDelete} header='Er du sikker på du vil slette' warning='Slettede spørgsmål er ikke længere synlige for brugere på siden' primButton='Slet' secButton='Cancel' ></WarningPopup>
+
+                <WarningPopup warningModal={warningModal} setWarningModal={setWarningModal} primeFuction={handleDelete} header={warningTitle} warning='Slettede spørgsmål er ikke længere synlige for brugere på siden' primButton='Slet' secButton='Cancel' ></WarningPopup>
                 <InforPopup state={infoModal} setState={setInfoModal} header='Spørgsmålet er nu slettet' warning='Spørgsmål kan altid genskabes via "vis slettede"' buttonTxt='Forstået'></InforPopup>
+
                     <div id='top-section'>
                         <SortSlider setSort={setSort}/>
                         <img onClick={toggleFilter} id="filter_icon" src='./filter_icon-25.svg'></img>
@@ -144,7 +165,7 @@ const Forum = () => {
                         <div id='categories'>
                             <SortSlider setSort={setSort}/>
                             <div className='delete-check-wrapper'>
-                                <input type='checkbox' id='delete-check' className="delete-check" name='delete-check' value='deleted' onChange={handleChange}></input>
+                                <input type='checkbox' id='delete-check' className="delete-check" name='delete-check' value='deleted' onChange={toggleShowDelete}></input>
                                 <label className="delete-check-label" for='delete-check'>Vis slettede</label>
                             </div>
                             <h3>Filtrer</h3>
@@ -161,7 +182,7 @@ const Forum = () => {
                             <p onClick={resetCategories} id='reset_button'>Nulstil</p>
                         </div>
                     </div>
-                    <Question questions={questions} sort={sort} filterQuestions={filterQuestions} userType={userType} setDeleteId={setDeleteId} setWarningModal={setWarningModal}></Question>
+                    <Question questions={questions} sort={sort} filterQuestions={filterQuestions} userType={userType} setDeleteId={setDeleteId} setWarningModal={setWarningModal} showDelete={showDelete}></Question>
                 </>
             )
         } else {
