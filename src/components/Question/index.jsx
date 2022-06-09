@@ -1,9 +1,9 @@
 import { useLocation, Link } from 'react-router-dom';
 
 
-const Question = ({questions, sort, filterQuestions, admin}) => {
+const Question = ({questions, sort, filterQuestions, userType, setDeleteId, setWarningModal}) => {
 
-    console.log('admin', admin)
+    
 
     const { search } = useLocation()
   
@@ -34,7 +34,8 @@ const Question = ({questions, sort, filterQuestions, admin}) => {
 
     //To delete
     const handleDelete = (id) => {
-
+        setDeleteId(id)
+        setWarningModal(true)
     }
 
 
@@ -65,7 +66,7 @@ const Question = ({questions, sort, filterQuestions, admin}) => {
             sortedArray = sortedArray.sort((a, b) => parseInt(b.answers) - parseInt(a.answers));
         }
 
-        if (admin == true) {
+        if (userType == 2) {
             return (
                 
                 <div id='content'>
