@@ -111,6 +111,39 @@
         }
     }
 
+    .delete-check-wrapper {
+
+        #delete-check {
+            position: absolute;
+            opacity: 1;
+            height: 0;
+            width: 0;
+        }
+
+        .delete-check-label {
+            border: solid 1px $nightsky;
+            padding-top: 4PX 1rem;
+            text-align: center;
+            line-height: 30px;
+            width: 140px;
+            display: block;
+            border-radius: 10px;
+            margin: 1px 0;
+
+            &:hover {
+                border-width: 2px;
+                font-weight: bold;
+                margin: 0;
+            }
+        }
+
+        #delete-check:checked~.delete-check-label {
+            background-color: $nightsky;
+            color: $moonlight;
+            font-weight: bold;
+        }
+    }
+
     #categories {
         display: flex;
         flex-direction: column;
@@ -188,7 +221,14 @@
     max-width: none !important;
     margin-top: 165px !important;
 
+    .admin-wrapper {
+        display: grid;
+        grid-template-columns: auto 3rem;
+    }
+
     .question-box {
+        grid-column-start: 1;
+        grid-column-end: 2;
         display: grid;
         grid-template-columns: 55% 45%;
         grid-template-rows: 25% 75%;
@@ -282,6 +322,24 @@
                     border-radius: 5px;
                     color: $fog;
                 }
+            }
+        }
+    }
+
+    #delete-button {
+        grid-column-start: 2;
+        grid-column-end: 3;
+        width: 3rem;
+        height: auto;
+        border: none;
+        background-color: transparent;
+
+        img {
+            width: 2rem;
+            height: auto;
+
+            &:hover {
+                width: 2.5rem;
             }
         }
     }

@@ -21,7 +21,7 @@ const Popup = ({modal, setModal, getQuestionData}) => {
 
     //get request for cadegories
     useEffect(() => {
-        fetch('https://boss-info.herokuapp.com/api/categories', {
+        fetch('https://boss-info-extra.herokuapp.com/api/categories', {
         headers: {
             'api-key': 'nSY1oe7pw05ViSEapg09D4gHG87yJCTX67uDa1OO',
         }})
@@ -74,7 +74,7 @@ const Popup = ({modal, setModal, getQuestionData}) => {
             categories: clickedCategoies
         }
 
-       fetch("https://boss-info.herokuapp.com/api/questions", {
+       fetch("https://boss-info-extra.herokuapp.com/api/questions", {
             method: "post",
             headers: {
               "Content-Type": "application/json; charset=utf-8",

@@ -1,8 +1,11 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import { useSearchParams } from "react-router-dom";
 
 import SortSlider from '../../components/SortSlider';
 import Popup from '../../components/Popup'
+import WarningPopup from '../../components/WarningPopup'
+import InforPopup from '../../components/InfoPopup'
 import Question from '../../components/Question'
 import './style.scss'
 
@@ -12,9 +15,22 @@ const Forum = () => {
     const [sort, setSort] = useState("newest")
     const [questions, setQuestions] = useState(null)
 
+    let [filterQuestions, setFilteredQuestions] = useState([])
+    let [modal, setModal] = useState(false)
+    let [filter, setFilter] = useState(false)
+
+    const [warningModal, setWarningModal] = useState(false)
+    const [deleteId, setDeleteId] = useState(null)
+    const [infoModal, setInfoModal] = useState(false)
+    
+    const [searchParams, setSearchParams] = useSearchParams()
+    const userType = searchParams.get("type")
+
+
+
     //Async funtion to fetch the data from the api
     async function getQuestionData() {
-        fetch('https://boss-info.herokuapp.com/api/questions', {
+        fetch('https://boss-info-extra.herokuapp.com/api/questions', {
         headers: {
             'api-key': 'nSY1oe7pw05ViSEapg09D4gHG87yJCTX67uDa1OO',
         }})
@@ -30,19 +46,13 @@ const Forum = () => {
 
     //get request for the categories
     useEffect(() => {
-        fetch('https://boss-info.herokuapp.com/api/categories', {
+        fetch('https://boss-info-extra.herokuapp.com/api/categories', {
         headers: {
             'api-key': 'nSY1oe7pw05ViSEapg09D4gHG87yJCTX67uDa1OO',
         }})
         .then((response) => response.json() )
         .then((data) => setCategories(data))
     },[])
-
-
-
-    let [filterQuestions, setFilteredQuestions] = useState([])
-    let [modal, setModal] = useState(false)
-    let [filter, setFilter] = useState(false)
 
 
     //Filtering the posts
@@ -83,41 +93,113 @@ const Forum = () => {
         }
     }
 
+    const handleChange = () => {
+
+    }
+
+    const handleDelete = () => {
+        console.log('delete id', deleteId)
+
+        const jsonBody = {
+            deleted: 1
+        }
+
+        fetch(`https://boss-info-extra.herokuapp.com/api/questions/${deleteId}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              "api-key": "nSY1oe7pw05ViSEapg09D4gHG87yJCTX67uDa1OO",
+              "cache-control": "no-cache"
+            },
+            body: JSON.stringify(jsonBody),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+                //console.log(data)
+                getQuestionData()
+                setInfoModal(true)
+            });
+
+        
+    }
+
 
     if (categories) {
-        return (
-            <>
-            <Popup modal={modal} setModal={setModal} getQuestionData={getQuestionData}/>
-            
-                <div id='top-section'>
-                    <SortSlider setSort={setSort}/>
-                    <img onClick={toggleFilter} id="filter_icon" src='./filter_icon-25.svg'></img>
-
-                    <button onClick={toggleModal} className='new-question-button'>Nyt spørgsmål</button>
-                </div>
-                
-            
-                <div className={filter == true ? 'side-menu active' : 'side-menu unactive'}>
-                    <button onClick={toggleFilter}></button>
-                    <div id='categories'>
+        if (userType == 2) {
+            return (
+                <>
+                <Popup modal={modal} setModal={setModal} getQuestionData={getQuestionData}/>
+                <WarningPopup warningModal={warningModal} setWarningModal={setWarningModal} primeFuction={handleDelete} header='Er du sikker på du vil slette' warning='Slettede spørgsmål er ikke længere synlige for brugere på siden' primButton='Slet' secButton='Cancel' ></WarningPopup>
+                <InforPopup state={infoModal} setState={setInfoModal} header='Spørgsmålet er nu slettet' warning='Spørgsmål kan altid genskabes via "vis slettede"' buttonTxt='Forstået'></InforPopup>
+                    <div id='top-section'>
                         <SortSlider setSort={setSort}/>
-                        <h3>Filtrer</h3>
-                        {categories.categories.map((cat) => {
-                            // console.log("categories here", categories)
-                            return (
-                                <div className="category_wrapper">
-                                    <input type="checkbox" onClick={() => showFilter(cat, filterQuestions)} id={cat.id} className="category_checkbox" value={cat.category}/>
-                                    <label className="category_label" for={cat.id}>{cat.category}</label>
-                                </div>
-
-                            )
-                        })}
-                        <p onClick={resetCategories} id='reset_button'>Nulstil</p>
+                        <img onClick={toggleFilter} id="filter_icon" src='./filter_icon-25.svg'></img>
+    
+                        <button onClick={toggleModal} className='new-question-button'>Nyt spørgsmål</button>
                     </div>
-                </div>
-                <Question questions={questions} sort={sort} filterQuestions={filterQuestions}></Question>
-            </>
-        )
+                    
+                
+                    <div className={filter == true ? 'side-menu active' : 'side-menu unactive'}>
+                        <button onClick={toggleFilter}></button>
+                        <div id='categories'>
+                            <SortSlider setSort={setSort}/>
+                            <div className='delete-check-wrapper'>
+                                <input type='checkbox' id='delete-check' className="delete-check" name='delete-check' value='deleted' onChange={handleChange}></input>
+                                <label className="delete-check-label" for='delete-check'>Vis slettede</label>
+                            </div>
+                            <h3>Filtrer</h3>
+                            {categories.categories.map((cat) => {
+                                // console.log("categories here", categories)
+                                return (
+                                    <div className="category_wrapper">
+                                        <input type="checkbox" onClick={() => showFilter(cat, filterQuestions)} id={cat.id} className="category_checkbox" value={cat.category}/>
+                                        <label className="category_label" for={cat.id}>{cat.category}</label>
+                                    </div>
+    
+                                )
+                            })}
+                            <p onClick={resetCategories} id='reset_button'>Nulstil</p>
+                        </div>
+                    </div>
+                    <Question questions={questions} sort={sort} filterQuestions={filterQuestions} userType={userType} setDeleteId={setDeleteId} setWarningModal={setWarningModal}></Question>
+                </>
+            )
+        } else {
+            return (
+                <>
+                <Popup modal={modal} setModal={setModal} getQuestionData={getQuestionData}/>
+                
+                
+                    <div id='top-section'>
+                        <SortSlider setSort={setSort}/>
+                        <img onClick={toggleFilter} id="filter_icon" src='./filter_icon-25.svg'></img>
+    
+                        <button onClick={toggleModal} className='new-question-button'>Nyt spørgsmål</button>
+                    </div>
+                    
+                
+                    <div className={filter == true ? 'side-menu active' : 'side-menu unactive'}>
+                        <button onClick={toggleFilter}></button>
+                        <div id='categories'>
+                            <SortSlider setSort={setSort}/>
+                            <h3>Filtrer</h3>
+                            {categories.categories.map((cat) => {
+                                // console.log("categories here", categories)
+                                return (
+                                    <div className="category_wrapper">
+                                        <input type="checkbox" onClick={() => showFilter(cat, filterQuestions)} id={cat.id} className="category_checkbox" value={cat.category}/>
+                                        <label className="category_label" for={cat.id}>{cat.category}</label>
+                                    </div>
+    
+                                )
+                            })}
+                            <p onClick={resetCategories} id='reset_button'>Nulstil</p>
+                        </div>
+                    </div>
+                    <Question questions={questions} sort={sort} filterQuestions={filterQuestions} userType={userType}></Question>
+                </>
+            ) 
+        }
     } else {
         return <span>Loading</span>
     }

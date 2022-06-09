@@ -32,7 +32,7 @@ const Singleview = () => {
 
         console.log('json answer', answer)
 
-        fetch("https://boss-info.herokuapp.com/api/answers", {
+        fetch("https://boss-info-extra.herokuapp.com/api/answers", {
             method: "post",
             headers: {
               "Content-Type": "application/json; charset=utf-8",
@@ -52,7 +52,7 @@ const Singleview = () => {
 
     //Get request for a single question with answers and comments
     async function getData() {
-        fetch(`https://boss-info.herokuapp.com/api/questions/${id}`, {
+        fetch(`https://boss-info-extra.herokuapp.com/api/questions/${id}`, {
         headers: {
             'api-key': 'nSY1oe7pw05ViSEapg09D4gHG87yJCTX67uDa1OO',
         }})
