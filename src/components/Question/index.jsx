@@ -1,9 +1,10 @@
 import { useLocation, Link } from 'react-router-dom';
+import './delete.scss'
 
 
-const Question = ({questions, sort, filterQuestions, userType, setDeleteId, setWarningModal}) => {
+const Question = ({questions, sort, filterQuestions, userType, setDeleteId, setWarningModal, showDelete}) => {
 
-    
+    console.log('showDelete in question', showDelete)
 
     const { search } = useLocation()
   
@@ -38,10 +39,23 @@ const Question = ({questions, sort, filterQuestions, userType, setDeleteId, setW
         setWarningModal(true)
     }
 
+    
+
 
     if (questions) {
+
+        let filterDelete = questions.questions.filter(question => {
+            if (showDelete == true) {
+                return question.deleted == 1
+            } else {
+                return question.deleted == 0
+            }
+        })
+        
+
+
         //Filtering the question array
-        let filtered_data = questions.questions.filter(question => {
+        let filtered_data = filterDelete.filter(question => {
             if (filterQuestions.length > 0) {
                 return question.categories.some(r => filterQuestions.includes(r.category))
             } else {
@@ -67,6 +81,15 @@ const Question = ({questions, sort, filterQuestions, userType, setDeleteId, setW
         }
 
         if (userType == 2) {
+
+            let image
+
+            if (showDelete == true) {
+                image = './restore_icon.svg'
+            } else  {
+                image = './delete_icon.svg'
+            }
+
             return (
                 
                 <div id='content'>
@@ -76,9 +99,9 @@ const Question = ({questions, sort, filterQuestions, userType, setDeleteId, setW
                         return (
                             <div className='admin-wrapper'>
                             <Link to={`/forum/${question.id + search}`}>
-                                <div className='question-box'>
+                                <div className={showDelete ? 'question-box question-box-delete' : 'question-box'}>
                                     <div className='profile-box'>
-                                        <div className='circle-name'> <span>{question.account.firstname.substring(0,1) + question.account.lastname.substring(0,1)}</span></div>
+                                        <div className={showDelete ? 'circle-name circle-name-delete' : 'circle-name'}> <span>{question.account.firstname.substring(0,1) + question.account.lastname.substring(0,1)}</span></div>
                                         <div className='text-box'>
                                             <span className='profile-name'>{`${question.account.firstname} ${question.account.lastname}`}</span>
                                             <span className='time-stamp'>{changeTimeStamp(question.createdAt)}</span>
@@ -86,13 +109,14 @@ const Question = ({questions, sort, filterQuestions, userType, setDeleteId, setW
                                     </div>
                                     <div className='comment-container'>
                                         <p>{question.answers} kommentarer</p>
+
                                         <img src='./comment_icon.png' alt='taleboble, ikon der indikerer kommentarer'></img>
                                     </div>
                                     <div className='content-box'>
-                                        <h3>{question.title}</h3>
+                                        <h3 className={showDelete ? 'header-delete' : ''}>{question.title}</h3>
                                         <div className='text-content'>
                                             <span>{`${cutString(question.content)} `}</span>
-                                            <span className='read-more'>Læs mere</span>
+                                            <span className={showDelete ? 'read-more-delete' : 'read-more'}>Læs mere</span>
                                         </div>
                                         <div className='cats'>
                                             {question.categories.map((cat) => {
@@ -105,7 +129,7 @@ const Question = ({questions, sort, filterQuestions, userType, setDeleteId, setW
                                 </div>
                             </Link>
                             <button id='delete-button' onClick={() => handleDelete(question.id)}>
-                                <img height={40} width={30} src='./delete_icon.svg'></img>
+                                <img height={40} width={30} src={image} ></img>
                             </button>
                             </div>
                         )
