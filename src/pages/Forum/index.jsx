@@ -98,13 +98,17 @@ const Forum = () => {
 
     }
 
+    const handleDelete = () => {
+        console.log('delete id', deleteId)
+    }
+
 
     if (categories) {
         if (userType == 2) {
             return (
                 <>
                 <Popup modal={modal} setModal={setModal} getQuestionData={getQuestionData}/>
-                <WarningPopup warningModal={warningModal} setWarningModal={setWarningModal} header='Er du sikker på du vil slette' warning='Slettede spørgsmål er ikke længere synlige for brugere på siden' primButton='Slet' secButton='Cancel' ></WarningPopup>
+                <WarningPopup warningModal={warningModal} setWarningModal={setWarningModal} primeFuction={handleDelete} header='Er du sikker på du vil slette' warning='Slettede spørgsmål er ikke længere synlige for brugere på siden' primButton='Slet' secButton='Cancel' ></WarningPopup>
                     <div id='top-section'>
                         <SortSlider setSort={setSort}/>
                         <img onClick={toggleFilter} id="filter_icon" src='./filter_icon-25.svg'></img>
