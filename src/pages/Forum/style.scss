@@ -230,9 +230,10 @@
         grid-column-start: 1;
         grid-column-end: 2;
         display: grid;
-        grid-template-columns: 55% 45%;
-        grid-template-rows: 25% 75%;
-        row-gap: 15px;
+        //grid-template-columns: 55% 45%;
+        grid-template-columns: 1fr;
+        grid-template-rows: 0fr 1.1fr auto;
+        //row-gap: 15px;
         background-color: $rain;
         padding: 1rem;
         border-radius: 24px;
@@ -247,6 +248,7 @@
                 font-weight: 200;
                 color: $fog;
                 font-size: 0.9rem;
+                margin: 0;
             }
 
             img {
@@ -258,10 +260,13 @@
         .profile-box {
             display: flex;
             gap: 1rem;
+            grid-row-start: 2;
+            grid-row-end: 3;
 
             .circle-name {
                 height: 3rem;
                 width: 3rem;
+                min-width: 3rem;
                 background-color: #fff;
                 border-radius: 50%;
                 display: flex;
@@ -293,7 +298,7 @@
 
         .content-box {
             grid-column: 1 / span 2;
-            margin-left: 3.8rem;
+            //margin-left: 3.8rem;
 
             h3 {
                 &:hover {
@@ -367,6 +372,8 @@
 
             .profile-box {
                 margin-left: 20px;
+                grid-row-start: 1;
+                grid-row-end: 2;
             }
 
             .comment-container {
