@@ -5,7 +5,7 @@ import { useSearchParams } from "react-router-dom";
 import SortSlider from '../../components/SortSlider';
 import Popup from '../../components/Popup'
 import WarningPopup from '../../components/WarningPopup'
-import InforPopup from '../../components/InfoPopup'
+import InfoPopup from '../../components/InfoPopup'
 import Question from '../../components/Question'
 import './style.scss'
 
@@ -31,15 +31,9 @@ const Forum = () => {
     const userType = searchParams.get("type")
 
 
-    const [warningTitle, setWarningTitle] = useState('Er du sikker på du vil slette spørgsmålet')
 
-    useEffect(() => {
-        if (showDelete == true) {
-            setWarningTitle('Er du sikker på du vil genskabe spørgsmålet')
-        } else {
-            setWarningTitle('Er du sikker på du vil slette spørgsmålet')
-        }
-    })
+
+    
     
 
 
@@ -117,10 +111,9 @@ const Forum = () => {
     }
 
     const handleDelete = () => {
-        console.log('delete id', deleteId)
 
         const jsonBody = {
-            deleted: 1
+            deleted: showDelete ? 0 : 1
         }
 
         fetch(`https://boss-info-extra.herokuapp.com/api/questions/${deleteId}`, {
@@ -132,15 +125,39 @@ const Forum = () => {
             },
             body: JSON.stringify(jsonBody),
           })
-            .then((res) => res.json())
-            .then((data) => {
-                //console.log(data)
+            .then((res) => {
                 getQuestionData()
+                console.log('here')
                 setInfoModal(true)
+                console.log('here2')
             });
-
-        
     }
+
+    const [warningTitle, setWarningTitle] = useState('Er du sikker på du vil slette spørgsmålet')
+    const [warningText, setWarningText] = useState('Slettede spørgsmål er ikke længere synlige for brugere på siden')
+    const [primeButtonText, setPrimeButtonText] = useState('Slet')
+
+    const [infoTitle, setInfoTitle] = useState('Spørgsmålet er nu slettet')
+    const [infoText, setInfoText] = useState('Spørgsmål kan altid genskabes via "vis slettede"')
+
+    useEffect(() => {
+        if (showDelete == true) {
+            setWarningTitle('Er du sikker på du vil genskabe spørgsmålet')
+            setWarningText('Genskabte spørgsmål vil igen være synlige for brugere på siden')
+            setPrimeButtonText('Genskab')
+
+            setInfoTitle('Spørgsmålet er nu genskabt')
+            setInfoText('Spørgsmålet kan altid slettes igen')
+
+        } else {
+            setWarningTitle('Er du sikker på du vil slette spørgsmålet')
+            setWarningText('Slettede spørgsmål er ikke længere synlige for brugere på siden')
+            setPrimeButtonText('Slet')
+
+            setInfoTitle('Spørgsmålet er nu slettet')
+            setInfoText('Spørgsmål kan altid genskabes via "vis slettede"')
+        }
+    })
 
 
     if (categories) {
@@ -149,8 +166,8 @@ const Forum = () => {
                 <>
                 <Popup modal={modal} setModal={setModal} getQuestionData={getQuestionData}/>
 
-                <WarningPopup warningModal={warningModal} setWarningModal={setWarningModal} primeFuction={handleDelete} header={warningTitle} warning='Slettede spørgsmål er ikke længere synlige for brugere på siden' primButton='Slet' secButton='Cancel' ></WarningPopup>
-                <InforPopup state={infoModal} setState={setInfoModal} header='Spørgsmålet er nu slettet' warning='Spørgsmål kan altid genskabes via "vis slettede"' buttonTxt='Forstået'></InforPopup>
+                <WarningPopup warningModal={warningModal} setWarningModal={setWarningModal} primeFuction={handleDelete} header={warningTitle} warning={warningText} primButton={primeButtonText} secButton='Luk' ></WarningPopup>
+                <InfoPopup state={infoModal} setState={setInfoModal} header={infoTitle} warning={infoText} buttonTxt='Forstået'></InfoPopup>
 
                     <div id='top-section'>
                         <SortSlider setSort={setSort}/>

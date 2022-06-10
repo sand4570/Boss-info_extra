@@ -1,6 +1,6 @@
 @import "/src/sass/base/colors";
 
-#single-form1{
+#single-form1 {
     z-index: -1;
     position: absolute;
     top: 0vw;
@@ -8,7 +8,7 @@
     width: 200px;
 }
 
-#single-form2{
+#single-form2 {
     z-index: -2;
     position: absolute;
     top: 6vw;
@@ -16,23 +16,24 @@
     width: 150px;
 }
 
-.go_back_single{
+.go_back_single {
     position: relative;
     top: 70px;
     margin-bottom: 20px;
-	border: 2px solid $nightsky;
-	width: 50px;
-	height: 50px;
-	border-radius: 50px;
-	background-color: $moonlight;
-	content: "";
-	background-image: url('/back_arrow.png');
-	background-size: 20px 20px;
-	background-repeat: no-repeat;
-	background-position: center;
-	&:hover{
+    border: 2px solid $nightsky;
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+    background-color: $moonlight;
+    content: "";
+    background-image: url('/back_arrow.png');
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    &:hover {
         border: 3px solid $nightsky;
-	}
+    }
 }
 
 
@@ -48,6 +49,7 @@
         .circle-name {
             height: 3rem;
             width: 3rem;
+            min-width: 3rem;
             background-color: $rain;
             border-radius: 50%;
             display: flex;

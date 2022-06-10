@@ -3,10 +3,11 @@
 
 
 //---checkmark styling----
-.response_outer_wrapper{
+.response_outer_wrapper {
     display: grid;
     grid-template-columns: 1fr 25px;
-    .verified_container{
+
+    .verified_container {
         margin-top: auto;
         margin-bottom: auto;
         user-select: none;
@@ -16,13 +17,15 @@
         width: 20px;
         border: 1px solid #AFAFAF;
         border-radius: 5px;
-       input {
+
+        input {
             position: absolute;
             opacity: 0;
             cursor: pointer;
             height: 0;
             width: 0;
         }
+
         .verified_checkmark {
             position: absolute;
             top: -1px;
@@ -34,21 +37,22 @@
         }
     }
 }
-.verified_container input:checked ~ .verified_checkmark {
+
+.verified_container input:checked~.verified_checkmark {
     background-color: #AFAFAF;
     background-image: url('/checkmark-white.svg');
-  }
+}
 
-  .verified_checkmark {
+.verified_checkmark {
     content: "";
     background-image: url('/checkmark-grey.svg');
     background-size: 35px 30px;
     background-position: 0 3px;
     background-repeat: no-repeat;
     display: inline-block;
-  }
+}
 
-  //-------
+//-------
 
 .response-container {
     background-color: $rain;
@@ -171,6 +175,8 @@
 .circle-name-white {
     height: 3rem;
     width: 3rem;
+    min-width: 3rem;
+    min-width: 3rem;
     background-color: $moonlight;
     border-radius: 50%;
     display: flex;
@@ -186,13 +192,14 @@
     height: 1.5rem;
 }
 
-.response_outer_wrapper.not_admin{
+.response_outer_wrapper.not_admin {
     grid-template-columns: 1fr;
-    .verified_container{
+
+    .verified_container {
         display: none;
     }
 }
 
-.comment-wrapper.not_admin{
+.comment-wrapper.not_admin {
     margin-right: 1rem;
 }
