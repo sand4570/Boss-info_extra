@@ -19,18 +19,71 @@ const Singleview = () => {
 
     const [isVerified, setIsVerified] = useState([]);
     const [verifiedAnswer, setVerifiedAnswer] = useState(null);
+    const [newVerifiedAnswer, setNewVerifiedAnswer] = useState(null);
 
-    const verifyQuestion = () => {
+
+    const replaceVerified = () =>{
+        newVerifiedAnswer.verified = 1;
+        //console.log("new verified answer before set: ", newVerifiedAnswer);
+        //console.log("new verified id: ", newVerifiedAnswer.id);
+        setVerifiedAnswer(newVerifiedAnswer.id)
+        setVerifiedAnswer((state) => {
+            verifyQuestion(state);
+            return state;
+        })
+        handleVerification(newVerifiedAnswer)
+        
+    }
+
+
+    const verifyQuestion = (state = verifiedAnswer) => {
+        //console.log("verifyQuestion function")
+        //console.log("VERFIED ANSWER IN VERIFYQUESTION", state)
         let new_verified = question.questions[0].answers.map((svar) => {
-            if(svar.id == verifiedAnswer){
-                svar.verified = 1;
+            if(svar.id == state){
+                console.log("i am now verified with id: ", svar.id)
                 return 1
             } else {
-                svar.verified = 0;
                 return 0
             }
         })
+        console.log("is verified old: ", isVerified);
+        console.log("Is verified new; ", new_verified);
         setIsVerified(new_verified);
+        // console.log("VERIFIED", state)
+    }
+
+    const keepVerifiedAnswer = () =>{
+        //keep isVerified to be the same as before
+        setIsVerified(isVerified)
+    }
+
+    const handleVerification = (svar) => {
+
+   console.log("svar in patch", svar)
+      let jsonBody = {}
+
+        if(svar.verified == 1){
+            jsonBody = {
+                verified: 1
+            }
+        } else{
+            jsonBody = {
+                verified: 0
+            }
+        }
+
+       fetch(`https://boss-info-extra.herokuapp.com/api/answers/${svar.id}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              "api-key": "nSY1oe7pw05ViSEapg09D4gHG87yJCTX67uDa1OO",
+              "cache-control": "no-cache"
+            },
+            body: JSON.stringify(jsonBody),
+          })
+            .then(console.log("questions after patch", question))
+            .then(() => getData());
     }
 
     //post request for answers
@@ -72,15 +125,21 @@ const Singleview = () => {
         }})
         .then(response => response.json() )
         .then(data => {setQuestion(data); return data})
-        .then(data => {console.log("questions", question); return data})
-        // .then((question) => getVerifications(question))
+        //.then(data => {console.log("questions", question); return data})
         .then(data => {setIsVerified(
             data.questions[0].answers.map((answer) => { return answer.verified })
         ); return data})
+        .then(data => {
+            data.questions[0].answers.map((answer) => {
+                 if(answer.verified === 1){
+                     setVerifiedAnswer(answer.id)
+                 }
+            }); return data
+        })
     }
 
     useEffect(() => {
-        getData()        
+        getData()  
     },[])
 
     const scrollToInput = () => {
@@ -88,10 +147,12 @@ const Singleview = () => {
         document.querySelector("#respond-wrapper input").focus({preventScroll: true})
     }
 
+    console.log("is verified all: ", isVerified);
+
     if(question) {
         return (
             <>
-            <WarningPopup primeFuction={verifyQuestion} warningModal={warningModal} setWarningModal={setWarningModal} header={'Erstat verificeret svar'} warning={'Der findes allerede et verificeret svar på dette spørgsmål, og kan kun indeholde et. Ønsker du at erstatte det verificerede svar med det nye?'} primButton={'Erstat'} secButton={'Behold'} />
+            <WarningPopup primeFuction={replaceVerified} keepVerifiedAnswer={keepVerifiedAnswer} warningModal={warningModal} setWarningModal={setWarningModal} header={'Erstat verificeret svar'} warning={'Der findes allerede et verificeret svar på dette spørgsmål, og kan kun indeholde et. Ønsker du at erstatte det verificerede svar med det nye?'} primButton={'Erstat'} secButton={'Behold'} />
             <div id="single-view-container">
             <button className="go_back_single"  onClick={() => history.back()}></button>
             <div id="single-content">
@@ -120,7 +181,7 @@ const Singleview = () => {
                 <div id="response-wrapper">
                     {question.questions[0].answers.map((answer, i) => {
                         return (
-                            <Response verifiedAnswer={verifiedAnswer} verifyQuestion={verifyQuestion} key={i} setVerifiedAnswer={setVerifiedAnswer} isVerified={isVerified[i]} answer={answer} setWarningModal={setWarningModal} question={question} getData={getData}></Response>
+                            <Response key={i} setNewVerifiedAnswer={setNewVerifiedAnswer} handleVerification={handleVerification} verifyQuestion={verifyQuestion} setVerifiedAnswer={setVerifiedAnswer} isVerified={isVerified[i]} answer={answer} setWarningModal={setWarningModal} question={question} getData={getData} ></Response>
                         )
                     })}
                 </div>

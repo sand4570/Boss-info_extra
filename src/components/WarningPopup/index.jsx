@@ -1,13 +1,20 @@
 import React, {useState} from 'react';
 import './style.scss'
 
-const WarningPopup = ({warningModal, setWarningModal, primeFuction, header, warning, primButton, secButton}) => {
+const WarningPopup = ({warningModal, setWarningModal, primeFuction, header, warning, primButton, secButton, keepVerifiedAnswer}) => {
 
-    console.log('in warning', warningModal)
+    //console.log('in warning', warningModal)
 
     const handlePrimeClick = () => {
         setWarningModal(false)
         primeFuction()
+    }
+
+    const handleSecClick = () => {
+        setWarningModal(false)
+        if(keepVerifiedAnswer){
+            keepVerifiedAnswer()
+        }
     }
 
     return(
@@ -17,7 +24,7 @@ const WarningPopup = ({warningModal, setWarningModal, primeFuction, header, warn
                     <h2>{header}</h2>
                     <p>{warning}</p>
                     <div className='button_wrapper'>
-                        <button onClick={() => setWarningModal(false)} className='secondaryButton'>{secButton}</button>
+                        <button onClick={handleSecClick} className='secondaryButton'>{secButton}</button>
                     <button className='primaryButton' onClick={handlePrimeClick}>{primButton}</button>
                     </div>
                 </div>
