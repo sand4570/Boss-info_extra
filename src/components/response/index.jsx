@@ -6,7 +6,7 @@ import Comment from "./comment";
 import AddComment from "./AddComment";
 import { useSearchParams } from "react-router-dom";
 
-const Response = ({answer, isVerified, handleVerification, setWarningModal, setNewVerifiedAnswer, question, getData, setVerifiedAnswer, verifyQuestion}) => {
+const Response = ({checkVerified, changeVerified, answer, getData}) => {
 
     const [commentInput, setCommentInput] = useState("null")
     const [comment, setComment] = useState("")
@@ -17,7 +17,22 @@ const Response = ({answer, isVerified, handleVerification, setWarningModal, setN
 
     //const [newVerification, setNewVerification] = useState(null)
 
+    const handleVerify = (answer) => {
+        console.log('SANDIE answer', answer)
+        
+        
 
+        if (answer.verified == 1) {
+            console.log('already verifired')
+            changeVerified(answer)
+
+        } else {
+            console.log('not verified')
+            checkVerified(answer)
+        }
+    }
+
+/* 
     const setAnswerVerification = (verified_answer) => {
         console.log("setAnswerVerification function")
         if(isVerified == 1){
@@ -39,7 +54,7 @@ const Response = ({answer, isVerified, handleVerification, setWarningModal, setN
                 
             }
         }
-    }
+    } */
    
     //Scroll to the input and make it active
     const handleAnswerClick = (accountnName, id) => {
@@ -53,13 +68,12 @@ const Response = ({answer, isVerified, handleVerification, setWarningModal, setN
         input.focus({preventScroll: true})
     }
 
-    console.log("verified received: ", isVerified);
       if (answer) {
         if (answer.comments.length > 0) {
             return (
                 <>
                 <div className={userType == 2 ? "response_outer_wrapper" : "response_outer_wrapper not_admin"}>
-                    <div className={isVerified === 1 ? "response-container verified padding" : "response-container padding"}>
+                    <div className={answer.verified === 1 ? "response-container verified padding" : "response-container padding"}>
                         <div id="profile-wrapper">
                         <div className='circle-name-white'> <span>{answer.account.firstname.substring(0,1) + answer.account.lastname.substring(0,1)}</span></div>
                             <div>
@@ -71,7 +85,7 @@ const Response = ({answer, isVerified, handleVerification, setWarningModal, setN
                         <button className="answer-button-dark" onClick={() => {handleAnswerClick(answer.account.firstname, `A${answer.id}`)}}>Skriv en kommentar</button>
                     </div>
                     <label className="verified_container">
-                        <input type="radio" name="verified-checkmark" checked={isVerified} onChange={() => setAnswerVerification(answer)}/>
+                        <input type="checkbox" name="verified-checkmark" checked={answer.verified == 1 ? true : false} onChange={() => handleVerify(answer)}/>
                         <span className="verified_checkmark"></span>
                     </label>
                 </div>
@@ -90,7 +104,7 @@ const Response = ({answer, isVerified, handleVerification, setWarningModal, setN
             return (
                 <>
                 <div className={userType == 2 ? "response_outer_wrapper" : "response_outer_wrapper not_admin"}>
-                <div className={isVerified === 1 ? "response-container verified padding" : "response-container padding"}>
+                <div className={answer.verified === 1 ? "response-container verified padding" : "response-container padding"}>
                     <div id="profile-wrapper">
                     <div className='circle-name-white'> <span>{answer.account.firstname.substring(0,1) + answer.account.lastname.substring(0,1)}</span></div>
                         <div>
@@ -102,7 +116,7 @@ const Response = ({answer, isVerified, handleVerification, setWarningModal, setN
                     <button className="answer-button-dark" onClick={() => {handleAnswerClick(answer.account.firstname, `A${answer.id}`)}}>Skriv en kommentar</button>
                 </div>
                     <label className="verified_container">
-                        <input type="radio" name="verified-checkmark" checked={isVerified}  onChange={() => setAnswerVerification(answer)}/>
+                        <input type="checkbox" name="verified-checkmark" checked={answer.verified == 1 ? true : false}  onChange={() => handleVerify(answer)}/>
                         <span className="verified_checkmark"></span>
                     </label>
                 </div>

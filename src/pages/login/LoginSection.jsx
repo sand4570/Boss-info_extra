@@ -44,8 +44,6 @@ const LoginSection = ({state, data}) => {
     const validateInputs = (event) => {
         event.preventDefault()
 
-        console.log('time to validate')
-
         let isValid = true
 
         if (firstname == '') {
