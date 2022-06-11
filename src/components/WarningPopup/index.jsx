@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import './style.scss'
 
-const WarningPopup = ({warningModal, setWarningModal, primeFuction, header, warning, primButton, secButton, keepVerifiedAnswer}) => {
+const WarningPopup = ({warningModal, setWarningModal, primeFuction, header, warning, primButton, secButton, getData}) => {
 
     //console.log('in warning', warningModal)
 
@@ -12,8 +12,8 @@ const WarningPopup = ({warningModal, setWarningModal, primeFuction, header, warn
 
     const handleSecClick = () => {
         setWarningModal(false)
-        if(keepVerifiedAnswer){
-            keepVerifiedAnswer()
+        if(getData){
+            getData()
         }
     }
 

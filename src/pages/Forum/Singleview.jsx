@@ -17,14 +17,69 @@ const Singleview = () => {
 
     const [warningModal, setWarningModal] = useState(false)  
 
-    const [isVerified, setIsVerified] = useState([]);
+    /* const [isVerified, setIsVerified] = useState([]);
     const [verifiedAnswer, setVerifiedAnswer] = useState(null);
-    const [newVerifiedAnswer, setNewVerifiedAnswer] = useState(null);
+    const [newVerifiedAnswer, setNewVerifiedAnswer] = useState(null); */
+
+    const [verifyArray, setVerifyArray] = useState([])
+
+    const checkVerified = (answer) => {
+        
+        let patchArray = question.questions[0].answers.filter(answer => answer.verified == 1)
+
+        if (patchArray.length === 0) {
+            console.log('verifyAnswer', answer)
+            changeVerified(answer)
+        } else {
+            setWarningModal(true)
+
+            patchArray.push(answer)
+            setVerifyArray(patchArray)
+
+            
+        }
+    }
+
+    const createPatchArray = () => {
+        console.log('verifyArray', verifyArray)
+
+        verifyArray.map((answer) => {
+            changeVerified(answer)
+        })
+    }
 
 
-    const replaceVerified = () =>{
+    const changeVerified = (answer) => {
+        console.log('to verify', answer)
+
+      let jsonBody = {}
+
+        if(answer.verified == 1){
+            jsonBody = {
+                verified: 0
+            }
+        } else{
+            jsonBody = {
+                verified: 1
+            }
+        }
+
+       fetch(`https://boss-info-extra.herokuapp.com/api/answers/${answer.id}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              "api-key": "nSY1oe7pw05ViSEapg09D4gHG87yJCTX67uDa1OO",
+              "cache-control": "no-cache"
+            },
+            body: JSON.stringify(jsonBody),
+          })
+            .then(console.log("questions after patch", question))
+            .then(() => getData());
+    }
+
+/*     const replaceVerified = () =>{
         newVerifiedAnswer.verified = 1;
-        //console.log("new verified answer before set: ", newVerifiedAnswer);
+        console.log("new verified answer before set: ", newVerifiedAnswer);
         //console.log("new verified id: ", newVerifiedAnswer.id);
         setVerifiedAnswer(newVerifiedAnswer.id)
         setVerifiedAnswer((state) => {
@@ -55,12 +110,13 @@ const Singleview = () => {
 
     const keepVerifiedAnswer = () =>{
         //keep isVerified to be the same as before
-        setIsVerified(isVerified)
+        //setIsVerified(isVerified)
+        getData
     }
 
     const handleVerification = (svar) => {
 
-   console.log("svar in patch", svar)
+        console.log("svar in patch", svar)
       let jsonBody = {}
 
         if(svar.verified == 1){
@@ -84,7 +140,7 @@ const Singleview = () => {
           })
             .then(console.log("questions after patch", question))
             .then(() => getData());
-    }
+    } */
 
     //post request for answers
     const handleSubmit = (event) => {
@@ -119,14 +175,15 @@ const Singleview = () => {
 
     //Get request for a single question with answers and comments
     async function getData() {
+        console.log('getting data')
         fetch(`https://boss-info-extra.herokuapp.com/api/questions/${id}`, {
         headers: {
             'api-key': 'nSY1oe7pw05ViSEapg09D4gHG87yJCTX67uDa1OO',
         }})
         .then(response => response.json() )
         .then(data => {setQuestion(data); return data})
-        //.then(data => {console.log("questions", question); return data})
-        .then(data => {setIsVerified(
+        .then(data => {console.log("questions", question); return data})
+        /* .then(data => {setIsVerified(
             data.questions[0].answers.map((answer) => { return answer.verified })
         ); return data})
         .then(data => {
@@ -135,7 +192,7 @@ const Singleview = () => {
                      setVerifiedAnswer(answer.id)
                  }
             }); return data
-        })
+        }) */
     }
 
     useEffect(() => {
@@ -147,12 +204,12 @@ const Singleview = () => {
         document.querySelector("#respond-wrapper input").focus({preventScroll: true})
     }
 
-    console.log("is verified all: ", isVerified);
+    //console.log("is verified all: ", isVerified);
 
     if(question) {
         return (
             <>
-            <WarningPopup primeFuction={replaceVerified} keepVerifiedAnswer={keepVerifiedAnswer} warningModal={warningModal} setWarningModal={setWarningModal} header={'Erstat verificeret svar'} warning={'Der findes allerede et verificeret svar på dette spørgsmål, og kan kun indeholde et. Ønsker du at erstatte det verificerede svar med det nye?'} primButton={'Erstat'} secButton={'Behold'} />
+            <WarningPopup primeFuction={createPatchArray} getData={getData} warningModal={warningModal} setWarningModal={setWarningModal} header={'Erstat verificeret svar'} warning={'Der findes allerede et verificeret svar på dette spørgsmål, og kan kun indeholde et. Ønsker du at erstatte det verificerede svar med det nye?'} primButton={'Erstat'} secButton={'Behold'} />
             <div id="single-view-container">
             <button className="go_back_single"  onClick={() => history.back()}></button>
             <div id="single-content">
@@ -181,7 +238,7 @@ const Singleview = () => {
                 <div id="response-wrapper">
                     {question.questions[0].answers.map((answer, i) => {
                         return (
-                            <Response key={i} setNewVerifiedAnswer={setNewVerifiedAnswer} handleVerification={handleVerification} verifyQuestion={verifyQuestion} setVerifiedAnswer={setVerifiedAnswer} isVerified={isVerified[i]} answer={answer} setWarningModal={setWarningModal} question={question} getData={getData} ></Response>
+                            <Response key={i} checkVerified={checkVerified} changeVerified={changeVerified} answer={answer} getData={getData}  ></Response>
                         )
                     })}
                 </div>
