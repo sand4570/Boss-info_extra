@@ -17,6 +17,7 @@ const Navbar = () => {
     const [login, setLogin] = useState(false)
     const [searchParams, setSearchParams] = useSearchParams()
     const [accounts, setAccounts] = useState(null)
+    console.log('accounts', accounts)
 
     useEffect(() => {
         
@@ -52,16 +53,21 @@ const Navbar = () => {
     })
 
     const user = searchParams.get("id") 
+    console.log('user', user)
 
     if (user) {
         //Getting the user, if logged in
+        console.log('set the user')
         useEffect(() => {
-            fetch('https://boss-info-extra.herokuapp.com/api/accounts/' + user, {
+            fetch(`https://boss-info-extra.herokuapp.com/api/accounts/${user}`, {
             headers: {
                 'api-key': 'nSY1oe7pw05ViSEapg09D4gHG87yJCTX67uDa1OO',
             }})
             .then((response) => response.json() )
-            .then((data) => setAccounts(data.accounts[0].firstname.substring(0,1) + data.accounts[0].lastname.substring(0,1)))
+            .then((data) => {
+                console.log('data', data)
+                setAccounts(data.accounts[0].firstname.substring(0,1) + data.accounts[0].lastname.substring(0,1))
+            })
         },[])
     } else {
         useEffect(() => {
