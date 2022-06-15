@@ -18,16 +18,10 @@ const Response = ({checkVerified, changeVerified, answer, getData}) => {
     //const [newVerification, setNewVerification] = useState(null)
 
     const handleVerify = (answer) => {
-        console.log('SANDIE answer', answer)
-        
-        
-
         if (answer.verified == 1) {
-            console.log('already verifired')
             changeVerified(answer)
 
         } else {
-            console.log('not verified')
             checkVerified(answer)
         }
     }

@@ -4,8 +4,6 @@ import './delete.scss'
 
 const Question = ({questions, sort, filterQuestions, userType, setDeleteId, setWarningModal, showDelete}) => {
 
-    console.log('showDelete in question', showDelete)
-
     const { search } = useLocation()
   
     //To reformat the timestamps from the database
@@ -38,8 +36,6 @@ const Question = ({questions, sort, filterQuestions, userType, setDeleteId, setW
         setDeleteId(id)
         setWarningModal(true)
     }
-
-    
 
 
     if (questions) {

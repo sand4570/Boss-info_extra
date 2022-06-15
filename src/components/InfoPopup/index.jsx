@@ -1,11 +1,7 @@
-import React, {useState} from 'react';
+import React from 'react';
 import '../WarningPopup/style.scss'
 
 const InfoPopup = ({state, setState, header, warning, buttonTxt}) => {
-    const [modalIsOpen, setModalIsOpen] = useState(false)
-
-    console.log('in info', state)
-
     return(
         <div className={state ? 'modal_container_info showing' : 'modal_container_info hiding'}>
             <div className='modal_background'>

@@ -1,5 +1,5 @@
 import { useParams, useSearchParams } from "react-router-dom";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 
 import './single.scss'
 import Response from "../../components/response";
@@ -17,10 +17,6 @@ const Singleview = () => {
 
     const [warningModal, setWarningModal] = useState(false)  
 
-    /* const [isVerified, setIsVerified] = useState([]);
-    const [verifiedAnswer, setVerifiedAnswer] = useState(null);
-    const [newVerifiedAnswer, setNewVerifiedAnswer] = useState(null); */
-
     const [verifyArray, setVerifyArray] = useState([])
 
     const checkVerified = (answer) => {
@@ -28,21 +24,15 @@ const Singleview = () => {
         let patchArray = question.questions[0].answers.filter(answer => answer.verified == 1)
 
         if (patchArray.length === 0) {
-            console.log('verifyAnswer', answer)
             changeVerified(answer)
         } else {
             setWarningModal(true)
-
             patchArray.push(answer)
-            setVerifyArray(patchArray)
-
-            
+            setVerifyArray(patchArray) 
         }
     }
 
     const createPatchArray = () => {
-        console.log('verifyArray', verifyArray)
-
         verifyArray.map((answer) => {
             changeVerified(answer)
         })
@@ -76,71 +66,6 @@ const Singleview = () => {
             .then(console.log("questions after patch", question))
             .then(() => getData());
     }
-
-/*     const replaceVerified = () =>{
-        newVerifiedAnswer.verified = 1;
-        console.log("new verified answer before set: ", newVerifiedAnswer);
-        //console.log("new verified id: ", newVerifiedAnswer.id);
-        setVerifiedAnswer(newVerifiedAnswer.id)
-        setVerifiedAnswer((state) => {
-            verifyQuestion(state);
-            return state;
-        })
-        handleVerification(newVerifiedAnswer)
-        
-    }
-
-
-    const verifyQuestion = (state = verifiedAnswer) => {
-        //console.log("verifyQuestion function")
-        //console.log("VERFIED ANSWER IN VERIFYQUESTION", state)
-        let new_verified = question.questions[0].answers.map((svar) => {
-            if(svar.id == state){
-                console.log("i am now verified with id: ", svar.id)
-                return 1
-            } else {
-                return 0
-            }
-        })
-        console.log("is verified old: ", isVerified);
-        console.log("Is verified new; ", new_verified);
-        setIsVerified(new_verified);
-        // console.log("VERIFIED", state)
-    }
-
-    const keepVerifiedAnswer = () =>{
-        //keep isVerified to be the same as before
-        //setIsVerified(isVerified)
-        getData
-    }
-
-    const handleVerification = (svar) => {
-
-        console.log("svar in patch", svar)
-      let jsonBody = {}
-
-        if(svar.verified == 1){
-            jsonBody = {
-                verified: 1
-            }
-        } else{
-            jsonBody = {
-                verified: 0
-            }
-        }
-
-       fetch(`https://boss-info-extra.herokuapp.com/api/answers/${svar.id}`, {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json; charset=utf-8",
-              "api-key": "nSY1oe7pw05ViSEapg09D4gHG87yJCTX67uDa1OO",
-              "cache-control": "no-cache"
-            },
-            body: JSON.stringify(jsonBody),
-          })
-            .then(console.log("questions after patch", question))
-            .then(() => getData());
-    } */
 
     //post request for answers
     const handleSubmit = (event) => {
@@ -183,16 +108,6 @@ const Singleview = () => {
         .then(response => response.json() )
         .then(data => {setQuestion(data); return data})
         .then(data => {console.log("questions", question); return data})
-        /* .then(data => {setIsVerified(
-            data.questions[0].answers.map((answer) => { return answer.verified })
-        ); return data})
-        .then(data => {
-            data.questions[0].answers.map((answer) => {
-                 if(answer.verified === 1){
-                     setVerifiedAnswer(answer.id)
-                 }
-            }); return data
-        }) */
     }
 
     useEffect(() => {
@@ -203,8 +118,6 @@ const Singleview = () => {
         document.querySelector("#respond-wrapper").scrollIntoView({ behavior: 'smooth' })
         document.querySelector("#respond-wrapper input").focus({preventScroll: true})
     }
-
-    //console.log("is verified all: ", isVerified);
 
     if(question) {
         return (
